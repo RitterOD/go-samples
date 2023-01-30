@@ -1,8 +1,9 @@
-package hello
+package main
 
 import "fmt"
+import "sample/hello/randomstr"
 
-func Hello(name string) string {
-	message := fmt.Sprintf("Hi, %v. Welcome!", name)
-	return message
+func main() {
+	randomMessage := randomstr.RandomStr(100)
+	fmt.Printf("our random message is %s", randomMessage)
 }

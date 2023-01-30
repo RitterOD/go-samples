@@ -12,6 +12,7 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(503)
 	fmt.Fprintf(w, "%s %s %s", r.Method, r.URL, r.Proto)
 	for k, v := range r.Header {
 		fmt.Fprintf(w, "Header[%q] =%q\n", k, v)
