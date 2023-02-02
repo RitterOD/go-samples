@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"sample/alg/model"
 	"sample/alg/taskfield"
 )
@@ -24,12 +26,23 @@ func main() {
 	var height = model.GetHeight(node2)
 	fmt.Printf("Tree height: %d\n", height)
 
-	var tree = model.RandomTreeGenerator(5)
+	var tree = model.RandomTreeGenerator(200)
 	if tree != nil {
 		dotRep = model.GetDotGraphStringRepresentation(tree)
-		fmt.Printf("DOT REP RANDOM TREE\n")
-		fmt.Println(dotRep)
-		fmt.Printf("END DOT REP RANDOM TREE\n")
+		//fmt.Printf("DOT REP RANDOM TREE\n")
+		//fmt.Println(dotRep)
+		//fmt.Printf("END DOT REP RANDOM TREE\n")
+		f, err := os.Create("btree.txt")
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		defer f.Close()
+		_, err = f.WriteString(dotRep)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 	}
 
 }

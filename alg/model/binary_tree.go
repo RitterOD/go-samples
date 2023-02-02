@@ -96,7 +96,7 @@ func randomTreeGeneratorImpl(tree *binaryTreeNode, height, currentHeight int64, 
 	if currentHeight < height {
 		currentHeight += 1
 	}
-	if random/float64(currentHeight) > 0.10 {
+	if random/float64(currentHeight) > 0.05 {
 		var node = Create("\"" + RandomStr(10) + "\"")
 		if isLeft {
 			AddLeft(tree, node)
