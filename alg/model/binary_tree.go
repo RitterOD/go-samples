@@ -7,41 +7,41 @@ import (
 	"time"
 )
 
-type binaryTreeNode struct {
-	data   string
-	parent *binaryTreeNode
-	left   *binaryTreeNode
-	right  *binaryTreeNode
+type BinaryTreeNode struct {
+	Data   string
+	parent *BinaryTreeNode
+	Left   *BinaryTreeNode
+	Right  *BinaryTreeNode
 }
 
-func Create(data string) *binaryTreeNode {
-	var rv binaryTreeNode
-	rv.data = data
+func Create(data string) *BinaryTreeNode {
+	var rv BinaryTreeNode
+	rv.Data = data
 	return &rv
 }
 
-func AddRight(tree, node *binaryTreeNode) *binaryTreeNode {
+func AddRight(tree, node *BinaryTreeNode) *BinaryTreeNode {
 	if tree != nil {
-		tree.right = node
+		tree.Right = node
 	}
 	node.parent = tree
 	return tree
 }
 
-func AddLeft(tree, node *binaryTreeNode) *binaryTreeNode {
+func AddLeft(tree, node *BinaryTreeNode) *BinaryTreeNode {
 	if tree != nil {
-		tree.left = node
+		tree.Left = node
 	}
 	node.parent = tree
 	return tree
 }
 
-func GetHeight(tree *binaryTreeNode) int64 {
+func GetHeight(tree *BinaryTreeNode) int64 {
 	if tree == nil {
 		return 0
 	} else {
-		leftHeight := GetHeight(tree.left)
-		rightHeight := GetHeight(tree.right)
+		leftHeight := GetHeight(tree.Left)
+		rightHeight := GetHeight(tree.Right)
 		if leftHeight > rightHeight {
 			return 1 + leftHeight
 		} else {
@@ -50,7 +50,7 @@ func GetHeight(tree *binaryTreeNode) int64 {
 	}
 }
 
-func GetDotGraphStringRepresentation(tree *binaryTreeNode) string {
+func GetDotGraphStringRepresentation(tree *BinaryTreeNode) string {
 	var nodes = make([]string, 0)
 	var edges = make([]string, 0)
 	getDotGraphStringRepresentationImpl(tree, &nodes, &edges)
@@ -60,26 +60,26 @@ func GetDotGraphStringRepresentation(tree *binaryTreeNode) string {
 	return rv
 }
 
-func getDotGraphStringRepresentationImpl(tree *binaryTreeNode, nodes *[]string, edges *[]string) {
+func getDotGraphStringRepresentationImpl(tree *BinaryTreeNode, nodes *[]string, edges *[]string) {
 	if tree == nil {
 		return
 	} else {
-		*nodes = append(*nodes, tree.data)
-		if tree.left != nil {
-			*edges = append(*edges, tree.data+" -> "+tree.left.data)
-			getDotGraphStringRepresentationImpl(tree.left, nodes, edges)
+		*nodes = append(*nodes, tree.Data)
+		if tree.Left != nil {
+			*edges = append(*edges, tree.Data+" -> "+tree.Left.Data)
+			getDotGraphStringRepresentationImpl(tree.Left, nodes, edges)
 		}
-		if tree.right != nil {
-			*edges = append(*edges, tree.data+" -> "+tree.right.data)
-			getDotGraphStringRepresentationImpl(tree.right, nodes, edges)
+		if tree.Right != nil {
+			*edges = append(*edges, tree.Data+" -> "+tree.Right.Data)
+			getDotGraphStringRepresentationImpl(tree.Right, nodes, edges)
 		}
 	}
 
 }
 
-func RandomTreeGenerator(height int64) *binaryTreeNode {
+func RandomTreeGenerator(height int64, threshold float64) *BinaryTreeNode {
 	rand.Seed(time.Now().UnixNano())
-	return randomTreeGeneratorImpl(nil, height, 0, true)
+	return randomTreeGeneratorImpl(nil, height, 0, threshold, true)
 
 }
 
@@ -91,20 +91,20 @@ func RandomStr(n int) string {
 	return fmt.Sprintf("%x", b)[:n]
 }
 
-func randomTreeGeneratorImpl(tree *binaryTreeNode, height, currentHeight int64, isLeft bool) *binaryTreeNode {
+func randomTreeGeneratorImpl(tree *BinaryTreeNode, height, currentHeight int64, threshold float64, isLeft bool) *BinaryTreeNode {
 	var random = rand.Float64()
 	if currentHeight < height {
 		currentHeight += 1
 	}
-	if random/float64(currentHeight) > 0.10 {
+	if random/float64(currentHeight) > threshold {
 		var node = Create("\"" + RandomStr(10) + "\"")
 		if isLeft {
 			AddLeft(tree, node)
 		} else {
 			AddRight(tree, node)
 		}
-		randomTreeGeneratorImpl(node, height, currentHeight, true)
-		randomTreeGeneratorImpl(node, height, currentHeight, false)
+		randomTreeGeneratorImpl(node, height, currentHeight, threshold, true)
+		randomTreeGeneratorImpl(node, height, currentHeight, threshold, false)
 		return node
 	} else {
 		return nil

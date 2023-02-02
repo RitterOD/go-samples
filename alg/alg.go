@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 	"sample/alg/model"
 	"sample/alg/taskfield"
 )
@@ -21,15 +24,37 @@ func main() {
 	fmt.Printf("DOT REP\n")
 	fmt.Println(dotRep)
 	fmt.Printf("END DOT REP\n")
+	data, err := json.MarshalIndent(node2, "", "")
+	if err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Printf("Serialized tree:\n%s\n", data)
+	var node model.BinaryTreeNode
+	{
+	}
+	json.Unmarshal(data, &node)
+	fmt.Printf("Data of unmarshalled json: " + node.Data)
 	var height = model.GetHeight(node2)
 	fmt.Printf("Tree height: %d\n", height)
 
-	var tree = model.RandomTreeGenerator(5)
+	var tree = model.RandomTreeGenerator(10, 0.05)
 	if tree != nil {
 		dotRep = model.GetDotGraphStringRepresentation(tree)
-		fmt.Printf("DOT REP RANDOM TREE\n")
-		fmt.Println(dotRep)
-		fmt.Printf("END DOT REP RANDOM TREE\n")
+		//fmt.Printf("DOT REP RANDOM TREE\n")
+		//fmt.Println(dotRep)
+		//fmt.Printf("END DOT REP RANDOM TREE\n")
+		f, err := os.Create("btree.txt")
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		defer f.Close()
+		_, err = f.WriteString(dotRep)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
 	}
 
 }
