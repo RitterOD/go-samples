@@ -24,4 +24,12 @@ func main() {
 	var height = model.GetHeight(node2)
 	fmt.Printf("Tree height: %d\n", height)
 
+	var tree = model.RandomTreeGenerator(5)
+	if tree != nil {
+		dotRep = model.GetDotGraphStringRepresentation(tree)
+		fmt.Printf("DOT REP RANDOM TREE\n")
+		fmt.Println(dotRep)
+		fmt.Printf("END DOT REP RANDOM TREE\n")
+	}
+
 }

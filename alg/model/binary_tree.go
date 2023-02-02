@@ -1,6 +1,11 @@
 package model
 
-import "strings"
+import (
+	"fmt"
+	"math/rand"
+	"strings"
+	"time"
+)
 
 type binaryTreeNode struct {
 	data   string
@@ -16,13 +21,17 @@ func Create(data string) *binaryTreeNode {
 }
 
 func AddRight(tree, node *binaryTreeNode) *binaryTreeNode {
-	tree.right = node
+	if tree != nil {
+		tree.right = node
+	}
 	node.parent = tree
 	return tree
 }
 
 func AddLeft(tree, node *binaryTreeNode) *binaryTreeNode {
-	tree.left = node
+	if tree != nil {
+		tree.left = node
+	}
 	node.parent = tree
 	return tree
 }
@@ -64,6 +73,41 @@ func getDotGraphStringRepresentationImpl(tree *binaryTreeNode, nodes *[]string, 
 			*edges = append(*edges, tree.data+" -> "+tree.right.data)
 			getDotGraphStringRepresentationImpl(tree.right, nodes, edges)
 		}
+	}
+
+}
+
+func RandomTreeGenerator(height int64) *binaryTreeNode {
+	rand.Seed(time.Now().UnixNano())
+	return randomTreeGeneratorImpl(nil, height, 0, true)
+
+}
+
+func RandomStr(n int) string {
+	//fmt.Printf("random string with %d", n)
+	//rand.Seed(time.Now().UnixNano())
+	b := make([]byte, n)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)[:n]
+}
+
+func randomTreeGeneratorImpl(tree *binaryTreeNode, height, currentHeight int64, isLeft bool) *binaryTreeNode {
+	var random = rand.Float64()
+	if currentHeight < height {
+		currentHeight += 1
+	}
+	if random/float64(currentHeight) > 0.10 {
+		var node = Create("\"" + RandomStr(10) + "\"")
+		if isLeft {
+			AddLeft(tree, node)
+		} else {
+			AddRight(tree, node)
+		}
+		randomTreeGeneratorImpl(node, height, currentHeight, true)
+		randomTreeGeneratorImpl(node, height, currentHeight, false)
+		return node
+	} else {
+		return nil
 	}
 
 }
