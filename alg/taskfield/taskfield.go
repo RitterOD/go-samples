@@ -16,7 +16,7 @@ func GenerateIntField(height, width, lowBoundary, upBoundary int64) [][]int64 {
 	return rv
 }
 
-func Pretty_print(field [][]int64) {
+func PrettyPrint(field [][]int64) {
 	for _, i := range field {
 		fmt.Println(i)
 	}
