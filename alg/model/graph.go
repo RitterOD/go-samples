@@ -1,6 +1,7 @@
 package model
 
 import (
+	"container/list"
 	"strings"
 )
 
@@ -18,6 +19,12 @@ type Graph struct {
 	vertexToName map[int]string
 	nameToVertex map[string]int
 	graphType    GraphType
+}
+
+type BFSresult struct {
+	graph       Graph
+	source      int
+	destination map[int]int
 }
 
 func NewGraph(graphType GraphType) *Graph {
@@ -66,4 +73,14 @@ func (g Graph) getDotRepresentation() string {
 		panic("UNSUPPORTED GRAPH TYPE")
 	}
 
+}
+
+func (g Graph) BFS(s int) Graph {
+	queue := list.New()
+	queue.PushBack(s)
+	dst := 0
+	for queue.Len() != 0 {
+		dst++
+	}
+	panic("Not implemented")
 }
