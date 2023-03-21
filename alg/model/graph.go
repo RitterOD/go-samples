@@ -75,12 +75,27 @@ func (g Graph) getDotRepresentation() string {
 
 }
 
-func (g Graph) BFS(s int) Graph {
+func (g Graph) BFS(s int) BFSresult {
+	result := new(BFSresult)
+	result.graph = *NewGraph(DIRECTED)
+	result.destination = make(map[int]int)
+	visitNodes := make([]int, len(g.rep))
+	rg := result.graph
 	queue := list.New()
 	queue.PushBack(s)
+	result.destination[s] = 0
+	visitNodes[s] = 1
 	dst := 0
 	for queue.Len() != 0 {
+		cur := queue.Front()
 		dst++
+		rg.AddVertex(cur.Value.(int), g.vertexToName[cur.Value.(int)])
+		for _, u := range g.rep[cur.Value.(int)] {
+			rg.AddEdge(cur.Value.(int), u)
+			queue.PushBack(u)
+			result.destination[u] = dst
+		}
+		queue.Remove(cur)
 	}
-	panic("Not implemented")
+	return *result
 }
