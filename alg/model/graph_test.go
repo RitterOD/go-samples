@@ -73,3 +73,21 @@ func TestBFS(t *testing.T) {
 	}
 	fmt.Println(dotRep)
 }
+
+func TestUNDIRECTED_GetDotGraphStringRepresentation(t *testing.T) {
+	g := NewGraph(UNDIRECTED)
+	g.AddVertex(0, "A")
+	g.AddVertex(1, "B")
+	g.AddVertex(2, "C")
+	g.AddVertex(3, "D")
+	g.AddVertex(4, "E")
+
+	g.AddEdge(0, 1)
+	g.AddEdge(0, 2)
+	g.AddEdge(1, 3)
+	g.AddEdge(2, 4)
+	g.AddEdge(3, 2)
+
+	dotRep := g.getDotRepresentation()
+	fmt.Println(dotRep)
+}

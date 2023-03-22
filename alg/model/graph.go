@@ -9,6 +9,11 @@ type GraphRep map[int][]int
 
 type GraphType int64
 
+type Edge struct {
+	u int
+	v int
+}
+
 const (
 	DIRECTED   GraphType = 0
 	UNDIRECTED GraphType = 1
@@ -69,10 +74,26 @@ func (g Graph) getDotRepresentation() string {
 			}
 		}
 		return "digraph { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
+	} else if g.graphType == UNDIRECTED {
+		edgeSet := make(map[Edge]string)
+		for v, adjNodes := range g.rep {
+			for _, u := range adjNodes {
+				var edge Edge
+				if v < u {
+					edge = Edge{v, u}
+				} else {
+					edge = Edge{u, v}
+				}
+				edgeSet[edge] = g.vertexToName[u] + " -- " + g.vertexToName[v]
+			}
+		}
+		for _, e := range edgeSet {
+			edges = append(edges, e)
+		}
+		return "graph { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
 	} else {
 		panic("UNSUPPORTED GRAPH TYPE")
 	}
-
 }
 
 func (g Graph) BFS(s int) BFSresult {
