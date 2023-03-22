@@ -32,3 +32,22 @@ func TestGetDotGraphStringRepresentation(t *testing.T) {
 	dotRep := g.getDotRepresentation()
 	fmt.Println(dotRep)
 }
+
+func TestBFS(t *testing.T) {
+	g := NewGraph(DIRECTED)
+	g.AddVertex(0, "A")
+	g.AddVertex(1, "B")
+	g.AddVertex(2, "C")
+	g.AddVertex(3, "D")
+	g.AddVertex(4, "E")
+
+	g.AddEdge(0, 1)
+	g.AddEdge(0, 2)
+	g.AddEdge(1, 3)
+	g.AddEdge(2, 4)
+	g.AddEdge(3, 2)
+
+	bfsRes := g.BFS(0)
+	dotRep := bfsRes.graph.getDotRepresentation()
+	fmt.Println(dotRep)
+}

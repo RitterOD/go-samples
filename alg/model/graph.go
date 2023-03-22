@@ -91,9 +91,12 @@ func (g Graph) BFS(s int) BFSresult {
 		dst++
 		rg.AddVertex(cur.Value.(int), g.vertexToName[cur.Value.(int)])
 		for _, u := range g.rep[cur.Value.(int)] {
-			rg.AddEdge(cur.Value.(int), u)
-			queue.PushBack(u)
-			result.destination[u] = dst
+			if visitNodes[u] == 0 {
+				visitNodes[u] = 1
+				rg.AddEdge(cur.Value.(int), u)
+				queue.PushBack(u)
+				result.destination[u] = dst
+			}
 		}
 		queue.Remove(cur)
 	}
