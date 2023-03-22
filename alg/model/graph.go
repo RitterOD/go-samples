@@ -19,6 +19,19 @@ const (
 	UNDIRECTED GraphType = 1
 )
 
+type DfsColor int64
+
+const (
+	WHITE DfsColor = 0
+	GREY  DfsColor = 1
+	BLACK DfsColor = 2
+)
+
+type DfsTime struct {
+	tIn  int64
+	tOut int64
+}
+
 type Graph struct {
 	rep          GraphRep
 	vertexToName map[int]string
@@ -30,6 +43,12 @@ type BFSresult struct {
 	graph       Graph
 	source      int
 	destination map[int]int
+}
+
+type DFSresult struct {
+	graph  Graph
+	source int
+	times  map[int]DfsTime
 }
 
 func NewGraph(graphType GraphType) *Graph {
@@ -44,9 +63,12 @@ func NewGraph(graphType GraphType) *Graph {
 // TODO ERROR CHECK
 
 func (g Graph) AddVertex(v int, name string) {
-	g.rep[v] = []int{}
-	g.nameToVertex[name] = v
-	g.vertexToName[v] = name
+	_, existed := g.rep[v]
+	if !existed {
+		g.rep[v] = []int{}
+		g.nameToVertex[name] = v
+		g.vertexToName[v] = name
+	}
 }
 
 // TODO ERROR CHECK
@@ -118,6 +140,44 @@ func (g Graph) BFS(s int) BFSresult {
 			}
 		}
 		queue.Remove(cur)
+	}
+	return *result
+}
+
+func (g Graph) DFS(s int) DFSresult {
+	result := new(DFSresult)
+	result.graph = *NewGraph(DIRECTED)
+	result.times = make(map[int]DfsTime)
+	visitNodes := make([]DfsColor, len(g.rep))
+	rg := result.graph
+	stack := list.New()
+	stack.PushFront(s)
+	time := int64(0)
+	result.times[s] = DfsTime{time, -1}
+	visitNodes[s] = GREY
+	for stack.Len() != 0 {
+		cur := stack.Front()
+		rg.AddVertex(cur.Value.(int), g.vertexToName[cur.Value.(int)])
+		allVisited := true
+		for _, u := range g.rep[cur.Value.(int)] {
+			if visitNodes[u] == WHITE {
+				time++
+				visitNodes[u] = GREY
+				rg.AddEdge(cur.Value.(int), u)
+				stack.PushFront(u)
+				result.times[u] = DfsTime{time, -1}
+				allVisited = false
+				break
+			}
+		}
+		if allVisited {
+			stack.Remove(cur)
+			time++
+			tmpTime := result.times[cur.Value.(int)]
+			tmpTime.tOut = time
+			visitNodes[cur.Value.(int)] = BLACK
+			result.times[cur.Value.(int)] = tmpTime
+		}
 	}
 	return *result
 }
