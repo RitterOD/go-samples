@@ -85,17 +85,15 @@ func (g Graph) BFS(s int) BFSresult {
 	queue.PushBack(s)
 	result.destination[s] = 0
 	visitNodes[s] = 1
-	dst := 0
 	for queue.Len() != 0 {
 		cur := queue.Front()
-		dst++
 		rg.AddVertex(cur.Value.(int), g.vertexToName[cur.Value.(int)])
 		for _, u := range g.rep[cur.Value.(int)] {
 			if visitNodes[u] == 0 {
 				visitNodes[u] = 1
 				rg.AddEdge(cur.Value.(int), u)
 				queue.PushBack(u)
-				result.destination[u] = dst
+				result.destination[u] = result.destination[cur.Value.(int)] + 1
 			}
 		}
 		queue.Remove(cur)

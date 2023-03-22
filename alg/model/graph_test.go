@@ -49,5 +49,27 @@ func TestBFS(t *testing.T) {
 
 	bfsRes := g.BFS(0)
 	dotRep := bfsRes.graph.getDotRepresentation()
+	if bfsRes.destination[0] != 0 {
+		t.Error("destination to 0 !=0")
+		return
+	}
+	if bfsRes.destination[1] != 1 {
+		t.Error("destination to 1 !=1")
+		return
+	}
+	if bfsRes.destination[2] != 1 {
+		t.Error("destination to 2 !=1")
+		return
+	}
+
+	if bfsRes.destination[3] != 2 {
+		t.Error("destination to 3 !=1")
+		return
+	}
+
+	if bfsRes.destination[4] != 2 {
+		t.Error("destination to 4 !=2")
+		return
+	}
 	fmt.Println(dotRep)
 }
