@@ -52,12 +52,19 @@ func Extract(url string) ([]string, error) {
 	forEachNode(doc, visitNode, nil)
 	return links, nil
 }
+
+// tokens is a counting semaphore used to
+// enforce a limit of 20 concurrent requests.
+var tokens = make(chan struct{}, 20)
+
 func crawl(url string) []string {
 	fmt.Println(url)
+	tokens <- struct{}{}
 	list, err := Extract(url)
 	if err != nil {
 		log.Print(err)
 	}
+	<-tokens
 	return list
 }
 
