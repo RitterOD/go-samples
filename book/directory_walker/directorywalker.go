@@ -12,10 +12,25 @@ import (
 
 var verbose = flag.Bool("v", false, "show verbose progress messages")
 
+var done = make(chan struct{})
+
+func cancelled() bool {
+	select {
+	case <-done:
+		return true
+	default:
+		return false
+	}
+}
+
 var sema = make(chan struct{}, 20)
 
 func dirents(dir string) []os.FileInfo {
-	sema <- struct{}{}
+	select {
+	case sema <- struct{}{}: // acquire token
+	case <-done:
+		return nil // cancelled
+	}
 	defer func() { <-sema }()
 	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -27,6 +42,9 @@ func dirents(dir string) []os.FileInfo {
 
 func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
 	defer n.Done()
+	if cancelled() {
+		return
+	}
 	for _, entry := range dirents(dir) {
 		if entry.IsDir() {
 			n.Add(1)
@@ -42,6 +60,13 @@ func main() {
 	// Determine the initial directories.
 	flag.Parse()
 	roots := flag.Args()
+
+	// Cancel traversal when input is detected.
+	go func() {
+		os.Stdin.Read(make([]byte, 1)) // read a single byte
+		close(done)
+	}()
+
 	if len(roots) == 0 {
 		roots = []string{"."}
 	}
@@ -65,6 +90,13 @@ func main() {
 loop:
 	for {
 		select {
+
+		case <-done:
+			// Drain fileSizes to allow existing goroutines to finish.
+			for range fileSizes {
+				// Do nothing.
+			}
+			return
 		case size, ok := <-fileSizes:
 			if !ok {
 				break loop // fileSizes was closed
