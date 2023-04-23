@@ -8,3 +8,12 @@
 /book/directory_walker/directorywalker
 /book/netcat3/netcat3
 /book/chatserver/chatserver
+/antlr4/antlr4/
+/antlr4/JSON.interp
+/antlr4/JSON.tokens
+/antlr4/json_base_listener.go
+/antlr4/json_lexer.go
+/antlr4/json_listener.go
+/antlr4/json_parser.go
+/antlr4/JSONLexer.interp
+/antlr4/JSONLexer.tokens
