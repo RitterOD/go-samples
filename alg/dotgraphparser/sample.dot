@@ -6,5 +6,5 @@ digraph g {
 	A1 -> A2 [label=f];
 	A2 -> A3 [label=g];
 	B2 -> B3 [label=w];
-	B1 -> B3 [label=m tailport=s headport=s];
+	B1 -> B3 [label=m];
 }
