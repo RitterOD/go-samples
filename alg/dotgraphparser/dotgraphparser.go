@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"sample/alg/dotgraphparser/parser"
+	"sample/alg/model"
 )
 
 import (
@@ -30,15 +31,16 @@ type DotListener interface {
 
 type dotListener struct {
 	*parser.BaselexDotGraphListener
-	text string
+	text  string
+	graph model.WeightedGraph
 }
 
 func (l *dotListener) EnterGraph(c *parser.GraphContext) {
-
+	l.graph = *model.NewWeightedGraph()
 }
 
 func (l *dotListener) ExitGraph(c *parser.GraphContext) {
-
+	l.graph.Name(c.NAME().GetText())
 }
 
 func (l *dotListener) EnterEdge_declaration(c *parser.Edge_declarationContext) {
@@ -90,7 +92,7 @@ func main() {
 	var listener dotListener
 	p := parser.NewlexDotGraphParser(stream)
 	antlr.ParseTreeWalkerDefault.Walk(&listener, p.Graph())
-
+	fmt.Println("GRAPH NAME = " + listener.graph.GetName())
 	// LEXER USAGE DEMO
 	//TO DO FIX
 	//stream.GetAllText()

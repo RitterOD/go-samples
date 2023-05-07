@@ -76,6 +76,13 @@ func NewWeightedGraph() *WeightedGraph {
 	return g
 }
 
+func (g *WeightedGraph) Name(name string) {
+	g.name = name
+}
+func (g *WeightedGraph) GetName() string {
+	return g.name
+}
+
 func (g *WeightedGraph) AddVertex(v int, name string) {
 	_, existed := g.rep[v]
 	if !existed {
