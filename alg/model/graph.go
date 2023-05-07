@@ -15,8 +15,9 @@ type Edge struct {
 }
 
 const (
-	DIRECTED   GraphType = 0
-	UNDIRECTED GraphType = 1
+	DIRECTED          GraphType = 0
+	UNDIRECTED        GraphType = 1
+	WEIGHTED_DIRECTED           = 2
 )
 
 type DfsColor int64
@@ -49,6 +50,57 @@ type DFSresult struct {
 	graph  Graph
 	source int
 	times  map[int]DfsTime
+}
+
+type WeighedEdge struct {
+	vertexIndex int
+	weight      float64
+}
+
+type WeightedGraphRep map[int][]WeighedEdge
+
+type WeightedGraph struct {
+	rep          WeightedGraphRep
+	name         string
+	vertexToName map[int]string
+	nameToVertex map[string]int
+	graphType    GraphType
+}
+
+func NewWeightedGraph() *WeightedGraph {
+	g := new(WeightedGraph)
+	g.rep = make(WeightedGraphRep)
+	g.graphType = WEIGHTED_DIRECTED
+	g.nameToVertex = make(map[string]int)
+	g.vertexToName = make(map[int]string)
+	return g
+}
+
+func (g *WeightedGraph) AddVertex(v int, name string) {
+	_, existed := g.rep[v]
+	if !existed {
+		g.rep[v] = []WeighedEdge{}
+		g.nameToVertex[name] = v
+		g.vertexToName[v] = name
+	}
+}
+
+func (g *WeightedGraph) AddEdge(u, v int, weight float64) {
+	g.rep[v] = append(g.rep[u], WeighedEdge{vertexIndex: v, weight: weight})
+}
+
+func (g *WeightedGraph) getDotRepresentation() string {
+	nodes := make([]string, 0)
+	for n, _ := range g.nameToVertex {
+		nodes = append(nodes, n)
+	}
+	edges := make([]string, 0)
+	for v, adjNodes := range g.rep {
+		for _, u := range adjNodes {
+			edges = append(edges, g.vertexToName[v]+" -> "+g.vertexToName[u.vertexIndex])
+		}
+	}
+	return "digraph" + g.name + " { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
 }
 
 func NewGraph(graphType GraphType) *Graph {
