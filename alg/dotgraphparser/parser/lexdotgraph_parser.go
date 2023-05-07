@@ -1020,12 +1020,24 @@ type IAttribute_declarationContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetAttName returns the attName token.
+	GetAttName() antlr.Token
+
+	// GetAttValue returns the attValue token.
+	GetAttValue() antlr.Token
+
+	// SetAttName sets the attName token.
+	SetAttName(antlr.Token)
+
+	// SetAttValue sets the attValue token.
+	SetAttValue(antlr.Token)
+
 	// Getter signatures
 	OPEN_SQUARE_BRACKET() antlr.TerminalNode
-	AllNAME() []antlr.TerminalNode
-	NAME(i int) antlr.TerminalNode
 	EQUALS_OP() antlr.TerminalNode
 	CLOSE_SQUARE_BRACKET() antlr.TerminalNode
+	AllNAME() []antlr.TerminalNode
+	NAME(i int) antlr.TerminalNode
 
 	// IsAttribute_declarationContext differentiates from other interfaces.
 	IsAttribute_declarationContext()
@@ -1033,7 +1045,9 @@ type IAttribute_declarationContext interface {
 
 type Attribute_declarationContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser   antlr.Parser
+	attName  antlr.Token
+	attValue antlr.Token
 }
 
 func NewEmptyAttribute_declarationContext() *Attribute_declarationContext {
@@ -1058,16 +1072,16 @@ func NewAttribute_declarationContext(parser antlr.Parser, parent antlr.ParserRul
 
 func (s *Attribute_declarationContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *Attribute_declarationContext) GetAttName() antlr.Token { return s.attName }
+
+func (s *Attribute_declarationContext) GetAttValue() antlr.Token { return s.attValue }
+
+func (s *Attribute_declarationContext) SetAttName(v antlr.Token) { s.attName = v }
+
+func (s *Attribute_declarationContext) SetAttValue(v antlr.Token) { s.attValue = v }
+
 func (s *Attribute_declarationContext) OPEN_SQUARE_BRACKET() antlr.TerminalNode {
 	return s.GetToken(lexDotGraphParserOPEN_SQUARE_BRACKET, 0)
-}
-
-func (s *Attribute_declarationContext) AllNAME() []antlr.TerminalNode {
-	return s.GetTokens(lexDotGraphParserNAME)
-}
-
-func (s *Attribute_declarationContext) NAME(i int) antlr.TerminalNode {
-	return s.GetToken(lexDotGraphParserNAME, i)
 }
 
 func (s *Attribute_declarationContext) EQUALS_OP() antlr.TerminalNode {
@@ -1076,6 +1090,14 @@ func (s *Attribute_declarationContext) EQUALS_OP() antlr.TerminalNode {
 
 func (s *Attribute_declarationContext) CLOSE_SQUARE_BRACKET() antlr.TerminalNode {
 	return s.GetToken(lexDotGraphParserCLOSE_SQUARE_BRACKET, 0)
+}
+
+func (s *Attribute_declarationContext) AllNAME() []antlr.TerminalNode {
+	return s.GetTokens(lexDotGraphParserNAME)
+}
+
+func (s *Attribute_declarationContext) NAME(i int) antlr.TerminalNode {
+	return s.GetToken(lexDotGraphParserNAME, i)
 }
 
 func (s *Attribute_declarationContext) GetRuleContext() antlr.RuleContext {
@@ -1128,7 +1150,10 @@ func (p *lexDotGraphParser) Attribute_declaration() (localctx IAttribute_declara
 	}
 	{
 		p.SetState(49)
-		p.Match(lexDotGraphParserNAME)
+
+		var _m = p.Match(lexDotGraphParserNAME)
+
+		localctx.(*Attribute_declarationContext).attName = _m
 	}
 	{
 		p.SetState(50)
@@ -1136,7 +1161,10 @@ func (p *lexDotGraphParser) Attribute_declaration() (localctx IAttribute_declara
 	}
 	{
 		p.SetState(51)
-		p.Match(lexDotGraphParserNAME)
+
+		var _m = p.Match(lexDotGraphParserNAME)
+
+		localctx.(*Attribute_declarationContext).attValue = _m
 	}
 	{
 		p.SetState(52)

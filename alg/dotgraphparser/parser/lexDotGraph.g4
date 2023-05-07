@@ -12,7 +12,7 @@ undirect_edge_declaration: vname1=NAME UNDIRECT_EDGE_OP vname2=NAME;
 
 direct_edge_declaration: vname1=NAME DIRECT_EDGE_OP vname2=NAME;
 
-attribute_declaration: OPEN_SQUARE_BRACKET NAME EQUALS_OP NAME CLOSE_SQUARE_BRACKET;
+attribute_declaration: OPEN_SQUARE_BRACKET attName=NAME EQUALS_OP attValue=NAME CLOSE_SQUARE_BRACKET;
 
 GRAPH_TYPE:
   'digraph'|'graph';

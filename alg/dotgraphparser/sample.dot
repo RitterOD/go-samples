@@ -1,10 +1,14 @@
 digraph g {
-	A1 -> B1;
-	A2 -> B2;
-	A3 -> B3;
-
-	A1 -> A2 [label=f];
-	A2 -> A3 [label=g];
-	B2 -> B3 [label=w];
-	B1 -> B3 [label=m];
+  A;
+  B;
+  C;
+  D;
+  E;
+  F;
+  A -> B [weight=2];
+  A -> C [weight=1];
+  C -> D [weight=4];
+  C -> E [weight=3];
+  E -> F [weight=5];
+  F -> A [weight=6];
 }

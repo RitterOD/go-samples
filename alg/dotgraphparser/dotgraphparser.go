@@ -6,6 +6,7 @@ import (
 	"os"
 	"sample/alg/dotgraphparser/parser"
 	"sample/alg/model"
+	"strconv"
 )
 
 import (
@@ -31,8 +32,10 @@ type DotListener interface {
 
 type dotListener struct {
 	*parser.BaselexDotGraphListener
-	text  string
-	graph model.WeightedGraph
+	text               string
+	graph              model.WeightedGraph
+	currentVertexIndex int
+	currentWeight      float64
 }
 
 func (l *dotListener) EnterGraph(c *parser.GraphContext) {
@@ -47,14 +50,26 @@ func (l *dotListener) EnterEdge_declaration(c *parser.Edge_declarationContext) {
 
 }
 
-func (l *dotListener) ExitEdge_declaration(c *parser.Edge_declarationContext) {
-	fmt.Println("EDGE DECLARATION EXIT")
-	if c.GetDirvar() != nil {
-		fmt.Println("DIRECTED EDGE vertex1=" + c.GetDirvar().GetVname1().GetText() + " vertex2=" + c.GetDirvar().GetVname2().GetText())
-	} else if c.GetUnvar() != nil {
-		fmt.Println("UNDIRECTED EDGE vertex1=" + c.GetDirvar().GetVname1().GetText() + " vertex2=" + c.GetDirvar().GetVname2().GetText())
+func (l *dotListener) ExitAttribute_declaration(c *parser.Attribute_declarationContext) {
+	txtvalue := c.GetAttValue().GetText()
+	weight, err := strconv.ParseFloat(txtvalue, 64)
+	if err != nil {
+		l.currentWeight = 0
+		fmt.Println("cant convert to float" + txtvalue)
+	} else {
+		l.currentWeight = weight
 	}
-	//fmt.Println(c.GetText())
+
+}
+
+// TODO ADD ERROR HANDLING
+func (l *dotListener) ExitEdge_declaration(c *parser.Edge_declarationContext) {
+	if c.GetDirvar() != nil {
+		//fmt.Println("DIRECTED EDGE vertex1=" + c.GetDirvar().GetVname1().GetText() + " vertex2=" + c.GetDirvar().GetVname2().GetText())
+		l.graph.AddEdgeByVertexName(c.GetDirvar().GetVname1().GetText(), c.GetDirvar().GetVname2().GetText(), l.currentWeight)
+	} else if c.GetUnvar() != nil {
+		panic("UNSUPPORTED TYPE OF EDGE")
+	}
 }
 
 func (l *dotListener) EnterVertex_declaration(c *parser.Vertex_declarationContext) {
@@ -62,9 +77,9 @@ func (l *dotListener) EnterVertex_declaration(c *parser.Vertex_declarationContex
 }
 
 func (l *dotListener) ExitVertex_declaration(c *parser.Vertex_declarationContext) {
-	fmt.Println("VERTEX DECLARATION EXIT")
-	//c.get
-	fmt.Println(c.GetText())
+	l.graph.AddVertex(l.currentVertexIndex, c.NAME().GetText())
+	l.currentVertexIndex++
+	//fmt.Println(c.GetText())
 }
 
 func NewTreeShapeListener() *TreeShapeListener {
@@ -93,6 +108,7 @@ func main() {
 	p := parser.NewlexDotGraphParser(stream)
 	antlr.ParseTreeWalkerDefault.Walk(&listener, p.Graph())
 	fmt.Println("GRAPH NAME = " + listener.graph.GetName())
+	fmt.Println("END OF PARSING")
 	// LEXER USAGE DEMO
 	//TO DO FIX
 	//stream.GetAllText()
