@@ -246,3 +246,10 @@ func (g Graph) DFS(s int) DFSresult {
 	}
 	return *result
 }
+
+type ShortestPathNode struct {
+	parent      int
+	destination float64
+}
+
+type ShortestPathResult map[int]ShortestPathNode
