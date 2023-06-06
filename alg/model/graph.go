@@ -116,6 +116,14 @@ func (g *WeightedGraph) getDotRepresentation() string {
 	return "digraph" + g.name + " { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
 }
 
+func (g *WeightedGraph) GetRepresentation() WeightedGraphRep {
+	return g.rep
+}
+
+func (g *WeightedGraph) GetVertexIndexByName(name string) int {
+	return g.nameToVertex[name]
+}
+
 func NewGraph(graphType GraphType) *Graph {
 	g := new(Graph)
 	g.rep = make(GraphRep)
@@ -248,8 +256,9 @@ func (g Graph) DFS(s int) DFSresult {
 }
 
 type ShortestPathNode struct {
-	parent      int
-	destination float64
+	Vertex      int
+	Parent      int
+	Destination float64
 }
 
-type ShortestPathResult map[int]ShortestPathNode
+type ShortestPathResult map[int]*ShortestPathNode
