@@ -60,6 +60,10 @@ func (l *DotParserResult) ExitAttribute_declaration(c *parser.Attribute_declarat
 
 }
 
+func (l *DotParserResult) GetGraph() *model.WeightedGraph {
+	return &l.graph
+}
+
 // TODO ADD ERROR HANDLING
 func (l *DotParserResult) ExitEdge_declaration(c *parser.Edge_declarationContext) {
 	if c.GetDirvar() != nil {
