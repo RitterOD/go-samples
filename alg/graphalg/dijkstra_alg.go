@@ -3,6 +3,7 @@ package graphalg
 import (
 	"fmt"
 	pq "github.com/jupp0r/go-priority-queue"
+	"log"
 	"math"
 	"sample/alg/model"
 )
@@ -23,14 +24,23 @@ func Dijkstra(graph model.WeightedGraph, srcVertexName string) model.ShortestPat
 	}
 	for vertexPQ.Len() != 0 {
 		tmp, _ := vertexPQ.Pop()
-		node, _ := tmp.(model.ShortestPathNode)
-		edges := rep[node.Vertex]
-		fmt.Println(edges)
+		tmpNode, ok := tmp.(*model.ShortestPathNode)
+		if !ok {
+			log.Fatal("Can't convert")
+		} else {
+			for v, _ := range rep[tmpNode.Vertex] {
+				relax(v, tmpNode.Vertex, 0, &rv)
+			}
+		}
+		fmt.Println(tmp)
 	}
 	//graph.
 	return rv
 }
 
-func relax(u, v int, weight float64) {
+func relax(u, v int, weight float64, shortestPath *model.ShortestPathResult) {
+	if (*shortestPath)[u].Destination > (*shortestPath)[v].Destination+weight {
+		(*shortestPath)[u] = &model.ShortestPathNode{Parent: v, Destination: (*shortestPath)[v].Destination + weight}
+	}
 
 }
