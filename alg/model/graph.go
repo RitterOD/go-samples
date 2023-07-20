@@ -53,8 +53,8 @@ type DFSresult struct {
 }
 
 type WeighedEdge struct {
-	vertexIndex int
-	weight      float64
+	VertexIndex int
+	Weight      float64
 }
 
 type WeightedGraphRep map[int][]WeighedEdge
@@ -93,13 +93,13 @@ func (g *WeightedGraph) AddVertex(v int, name string) {
 }
 
 func (g *WeightedGraph) AddEdge(u, v int, weight float64) {
-	g.rep[v] = append(g.rep[v], WeighedEdge{vertexIndex: v, weight: weight})
+	g.rep[v] = append(g.rep[v], WeighedEdge{VertexIndex: v, Weight: weight})
 }
 
 func (g *WeightedGraph) AddEdgeByVertexName(uName, vName string, weight float64) {
 	u := g.nameToVertex[uName]
 	v := g.nameToVertex[vName]
-	g.rep[u] = append(g.rep[u], WeighedEdge{vertexIndex: v, weight: weight})
+	g.rep[u] = append(g.rep[u], WeighedEdge{VertexIndex: v, Weight: weight})
 }
 
 func (g *WeightedGraph) getDotRepresentation() string {
@@ -110,7 +110,7 @@ func (g *WeightedGraph) getDotRepresentation() string {
 	edges := make([]string, 0)
 	for v, adjNodes := range g.rep {
 		for _, u := range adjNodes {
-			edges = append(edges, g.vertexToName[v]+" -> "+g.vertexToName[u.vertexIndex])
+			edges = append(edges, g.vertexToName[v]+" -> "+g.vertexToName[u.VertexIndex])
 		}
 	}
 	return "digraph" + g.name + " { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
@@ -258,6 +258,7 @@ func (g Graph) DFS(s int) DFSresult {
 type ShortestPathNode struct {
 	Vertex      int
 	Parent      int
+	Marked      bool
 	Destination float64
 }
 
