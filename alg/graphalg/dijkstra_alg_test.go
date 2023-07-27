@@ -1,6 +1,7 @@
 package graphalg
 
 import (
+	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 	"os"
 	"sample/alg/dotgraphparser"
@@ -26,6 +27,7 @@ func TestDijkstra(t *testing.T) {
 	} else {
 		t.Log("GRAPH NAME PASSED")
 	}
-	Dijkstra(*graph, "A")
-
+	shortestPath := Dijkstra(*graph, "A")
+	shortestPathGraph := shortestPath.ConvertToWeighted()
+	fmt.Println(shortestPathGraph.GetDotRepresentation())
 }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"container/list"
+	"fmt"
 	"strings"
 )
 
@@ -263,3 +264,13 @@ type ShortestPathNode struct {
 }
 
 type ShortestPathResult map[int]*ShortestPathNode
+
+func (result *ShortestPathResult) ConvertToWeighted() *WeightedGraph {
+	rv := NewWeightedGraph()
+	for v, r := range *result {
+		rv.AddVertex(v, fmt.Sprint(v))
+		rv.AddVertex(r.Parent, fmt.Sprint(r.Parent))
+		rv.AddEdge(r.Parent, v, r.Destination-(*result)[r.Parent].Destination)
+	}
+	return rv
+}
