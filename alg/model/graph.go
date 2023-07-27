@@ -93,7 +93,7 @@ func (g *WeightedGraph) AddVertex(v int, name string) {
 }
 
 func (g *WeightedGraph) AddEdge(u, v int, weight float64) {
-	g.rep[v] = append(g.rep[v], WeighedEdge{VertexIndex: v, Weight: weight})
+	g.rep[v] = append(g.rep[v], WeighedEdge{VertexIndex: u, Weight: weight})
 }
 
 func (g *WeightedGraph) AddEdgeByVertexName(uName, vName string, weight float64) {
@@ -102,7 +102,7 @@ func (g *WeightedGraph) AddEdgeByVertexName(uName, vName string, weight float64)
 	g.rep[u] = append(g.rep[u], WeighedEdge{VertexIndex: v, Weight: weight})
 }
 
-func (g *WeightedGraph) getDotRepresentation() string {
+func (g *WeightedGraph) GetDotRepresentation() string {
 	nodes := make([]string, 0)
 	for n, _ := range g.nameToVertex {
 		nodes = append(nodes, n)
