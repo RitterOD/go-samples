@@ -28,6 +28,6 @@ func TestDijkstra(t *testing.T) {
 		t.Log("GRAPH NAME PASSED")
 	}
 	shortestPath := Dijkstra(*graph, "A")
-	shortestPathGraph := shortestPath.ConvertToWeighted()
+	shortestPathGraph := shortestPath.ConvertToWeighted(*graph)
 	fmt.Println(shortestPathGraph.GetDotRepresentation())
 }

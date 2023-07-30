@@ -111,7 +111,8 @@ func (g *WeightedGraph) GetDotRepresentation() string {
 	edges := make([]string, 0)
 	for v, adjNodes := range g.rep {
 		for _, u := range adjNodes {
-			edges = append(edges, g.vertexToName[v]+" -> "+g.vertexToName[u.VertexIndex])
+			edges = append(edges, g.vertexToName[v]+" -> "+g.vertexToName[u.VertexIndex]+
+				"[weight ="+fmt.Sprint(u.Weight)+" ]")
 		}
 	}
 	return "digraph" + g.name + " { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
@@ -265,12 +266,14 @@ type ShortestPathNode struct {
 
 type ShortestPathResult map[int]*ShortestPathNode
 
-func (result *ShortestPathResult) ConvertToWeighted() *WeightedGraph {
+func (result *ShortestPathResult) ConvertToWeighted(srcGraph WeightedGraph) *WeightedGraph {
 	rv := NewWeightedGraph()
 	for v, r := range *result {
-		rv.AddVertex(v, fmt.Sprint(v))
-		rv.AddVertex(r.Parent, fmt.Sprint(r.Parent))
-		rv.AddEdge(r.Parent, v, r.Destination-(*result)[r.Parent].Destination)
+		rv.AddVertex(v, srcGraph.vertexToName[v])
+		rv.AddVertex(r.Parent, srcGraph.vertexToName[r.Parent])
+		if r.Parent != v {
+			rv.AddEdge(v, r.Parent, r.Destination-(*result)[r.Parent].Destination)
+		}
 	}
 	return rv
 }
