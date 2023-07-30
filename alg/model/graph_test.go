@@ -48,30 +48,32 @@ func TestBFS(t *testing.T) {
 	g.AddEdge(3, 2)
 
 	bfsRes := g.BFS(0)
-	dotRep := bfsRes.graph.getDotRepresentation()
-	if bfsRes.destination[0] != 0 {
+	dotRep := bfsRes.Graph.getDotRepresentation()
+	if bfsRes.Destination[0] != 0 {
 		t.Error("times to 0 !=0")
 		return
 	}
-	if bfsRes.destination[1] != 1 {
+	if bfsRes.Destination[1] != 1 {
 		t.Error("times to 1 !=1")
 		return
 	}
-	if bfsRes.destination[2] != 1 {
+	if bfsRes.Destination[2] != 1 {
 		t.Error("times to 2 !=1")
 		return
 	}
 
-	if bfsRes.destination[3] != 2 {
+	if bfsRes.Destination[3] != 2 {
 		t.Error("times to 3 !=1")
 		return
 	}
 
-	if bfsRes.destination[4] != 2 {
+	if bfsRes.Destination[4] != 2 {
 		t.Error("times to 4 !=2")
 		return
 	}
 	fmt.Println(dotRep)
+	weighted := bfsRes.ConvertToWeighted(g)
+	fmt.Println(weighted.GetDotRepresentation())
 }
 
 func TestUNDIRECTED_GetDotGraphStringRepresentation(t *testing.T) {

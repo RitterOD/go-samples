@@ -42,9 +42,10 @@ type Graph struct {
 }
 
 type BFSresult struct {
-	graph       Graph
-	source      int
-	destination map[int]int
+	Graph       Graph
+	Source      int
+	Destination map[int]int
+	Parent      map[int]int
 }
 
 type DFSresult struct {
@@ -195,13 +196,14 @@ func (g Graph) getDotRepresentation() string {
 
 func (g Graph) BFS(s int) BFSresult {
 	result := new(BFSresult)
-	result.graph = *NewGraph(DIRECTED)
-	result.destination = make(map[int]int)
+	result.Graph = *NewGraph(DIRECTED)
+	result.Destination = make(map[int]int)
+	result.Parent = make(map[int]int)
 	visitNodes := make([]int, len(g.rep))
-	rg := result.graph
+	rg := result.Graph
 	queue := list.New()
 	queue.PushBack(s)
-	result.destination[s] = 0
+	result.Destination[s] = 0
 	visitNodes[s] = 1
 	for queue.Len() != 0 {
 		cur := queue.Front()
@@ -211,7 +213,8 @@ func (g Graph) BFS(s int) BFSresult {
 				visitNodes[u] = 1
 				rg.AddEdge(cur.Value.(int), u)
 				queue.PushBack(u)
-				result.destination[u] = result.destination[cur.Value.(int)] + 1
+				result.Destination[u] = result.Destination[cur.Value.(int)] + 1
+				result.Parent[u] = cur.Value.(int)
 			}
 		}
 		queue.Remove(cur)
@@ -266,13 +269,25 @@ type ShortestPathNode struct {
 
 type ShortestPathResult map[int]*ShortestPathNode
 
-func (result *ShortestPathResult) ConvertToWeighted(srcGraph WeightedGraph) *WeightedGraph {
+func (result *ShortestPathResult) ConvertToWeighted(srcGraph *WeightedGraph) *WeightedGraph {
 	rv := NewWeightedGraph()
 	for v, r := range *result {
 		rv.AddVertex(v, srcGraph.vertexToName[v])
 		rv.AddVertex(r.Parent, srcGraph.vertexToName[r.Parent])
 		if r.Parent != v {
 			rv.AddEdge(v, r.Parent, r.Destination-(*result)[r.Parent].Destination)
+		}
+	}
+	return rv
+}
+
+func (result *BFSresult) ConvertToWeighted(srcGraph *Graph) *WeightedGraph {
+	rv := NewWeightedGraph()
+	for v, p := range result.Parent {
+		rv.AddVertex(v, srcGraph.vertexToName[v])
+		rv.AddVertex(p, srcGraph.vertexToName[p])
+		if v != p {
+			rv.AddEdge(p, v, float64(result.Destination[v]-result.Destination[p]))
 		}
 	}
 	return rv
