@@ -30,8 +30,8 @@ const (
 )
 
 type DfsTime struct {
-	tIn  int64
-	tOut int64
+	TimeIn  int64
+	TimeOut int64
 }
 
 type Graph struct {
@@ -49,9 +49,10 @@ type BFSresult struct {
 }
 
 type DFSresult struct {
-	graph  Graph
-	source int
-	times  map[int]DfsTime
+	Graph  Graph
+	Source int
+	Times  map[int]DfsTime
+	Parent map[int]int
 }
 
 type WeighedEdge struct {
@@ -155,7 +156,7 @@ func (g Graph) AddEdge(u, v int) {
 		g.rep[v] = append(g.rep[v], u)
 		g.rep[u] = append(g.rep[u], v)
 	} else {
-		panic("Not supported graph type")
+		panic("Not supported Graph type")
 	}
 }
 
@@ -188,7 +189,7 @@ func (g Graph) getDotRepresentation() string {
 		for _, e := range edgeSet {
 			edges = append(edges, e)
 		}
-		return "graph { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
+		return "Graph { " + strings.Join(nodes[:], ";\n") + "\n" + strings.Join(edges[:], "\n") + " }"
 	} else {
 		panic("UNSUPPORTED GRAPH TYPE")
 	}
@@ -222,16 +223,16 @@ func (g Graph) BFS(s int) BFSresult {
 	return *result
 }
 
-func (g Graph) DFS(s int) DFSresult {
+func (g *Graph) DFS(s int) *DFSresult {
 	result := new(DFSresult)
-	result.graph = *NewGraph(DIRECTED)
-	result.times = make(map[int]DfsTime)
+	result.Graph = *NewGraph(DIRECTED)
+	result.Times = make(map[int]DfsTime)
 	visitNodes := make([]DfsColor, len(g.rep))
-	rg := result.graph
+	rg := result.Graph
 	stack := list.New()
 	stack.PushFront(s)
 	time := int64(0)
-	result.times[s] = DfsTime{time, -1}
+	result.Times[s] = DfsTime{time, -1}
 	visitNodes[s] = GREY
 	for stack.Len() != 0 {
 		cur := stack.Front()
@@ -243,7 +244,7 @@ func (g Graph) DFS(s int) DFSresult {
 				visitNodes[u] = GREY
 				rg.AddEdge(cur.Value.(int), u)
 				stack.PushFront(u)
-				result.times[u] = DfsTime{time, -1}
+				result.Times[u] = DfsTime{time, -1}
 				allVisited = false
 				break
 			}
@@ -251,13 +252,13 @@ func (g Graph) DFS(s int) DFSresult {
 		if allVisited {
 			stack.Remove(cur)
 			time++
-			tmpTime := result.times[cur.Value.(int)]
-			tmpTime.tOut = time
+			tmpTime := result.Times[cur.Value.(int)]
+			tmpTime.TimeOut = time
 			visitNodes[cur.Value.(int)] = BLACK
-			result.times[cur.Value.(int)] = tmpTime
+			result.Times[cur.Value.(int)] = tmpTime
 		}
 	}
-	return *result
+	return result
 }
 
 type ShortestPathNode struct {

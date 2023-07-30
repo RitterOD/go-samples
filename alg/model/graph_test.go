@@ -50,25 +50,25 @@ func TestBFS(t *testing.T) {
 	bfsRes := g.BFS(0)
 	dotRep := bfsRes.Graph.getDotRepresentation()
 	if bfsRes.Destination[0] != 0 {
-		t.Error("times to 0 !=0")
+		t.Error("Times to 0 !=0")
 		return
 	}
 	if bfsRes.Destination[1] != 1 {
-		t.Error("times to 1 !=1")
+		t.Error("Times to 1 !=1")
 		return
 	}
 	if bfsRes.Destination[2] != 1 {
-		t.Error("times to 2 !=1")
+		t.Error("Times to 2 !=1")
 		return
 	}
 
 	if bfsRes.Destination[3] != 2 {
-		t.Error("times to 3 !=1")
+		t.Error("Times to 3 !=1")
 		return
 	}
 
 	if bfsRes.Destination[4] != 2 {
-		t.Error("times to 4 !=2")
+		t.Error("Times to 4 !=2")
 		return
 	}
 	fmt.Println(dotRep)
@@ -109,6 +109,6 @@ func TestUNDIRECTED_DFS(t *testing.T) {
 	g.AddEdge(3, 2)
 
 	dfsResult := g.DFS(0)
-	dotRep := dfsResult.graph.getDotRepresentation()
+	dotRep := dfsResult.Graph.getDotRepresentation()
 	fmt.Println(dotRep)
 }
